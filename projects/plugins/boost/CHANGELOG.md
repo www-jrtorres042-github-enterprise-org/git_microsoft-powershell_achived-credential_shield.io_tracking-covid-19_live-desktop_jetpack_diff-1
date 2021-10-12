@@ -5,16 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.3.0-beta] - 2021-10-04
+## [1.3.0-beta] - 2021-10-12
 ### Security
 - Critical CSS: Add permissions checks to AJAX endpoints used when dismissing Critical CSS Recommendations.
 
 ### Added
-- Critical CSS: Add extra information to "fetch" errors when generating Critical CSS.
 - Critical CSS: Added explanation for mod-security HTTP 418 errors.
 - Critical CSS: Added stats tracking for generation outcomes.
 - Critical CSS: Added step-by-step instructions for Advanced Recommendations.
+- Critical CSS: Add extra information to "fetch" errors when generating Critical CSS.
 - Critical CSS: More descriptive error message if critical css is failing because of x-frame-options deny config.
+- Speed Scores: Retry if a score request job is stuck for more than 15 minutes
 - Speed Scores: Added "without Boost" speed score indicator.
 
 ### Changed
