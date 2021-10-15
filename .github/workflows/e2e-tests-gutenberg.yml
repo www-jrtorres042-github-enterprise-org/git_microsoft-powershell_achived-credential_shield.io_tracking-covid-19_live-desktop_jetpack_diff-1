@@ -1,0 +1,69 @@
+name: E2E Tests with latest Gutenberg plugin
+
+on:
+  pull_request:
+    paths-ignore:
+    - '**.md'
+  schedule:
+    - cron:  '0 */12 * * *'
+concurrency:
+  group: e2e-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e-tests:
+    name: "E2E Gutenberg tests"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Run tests
+      uses: ./.github/actions/e2e-tests
+      with:
+        working_directory: projects/plugins/jetpack/tests/e2e
+        test_group: gutenberg
+        test_args:
+
+  slack-notification:
+    name: "Slack notification"
+    runs-on: ubuntu-latest
+    needs: e2e-tests
+    env:
+      CONFIG_KEY: ${{ secrets.E2E_CONFIG_KEY }}
+      GITHUB_CONTEXT: ${{ toJson(github) }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup tools
+        uses: ./.github/actions/tool-setup
+        with:
+          php: false
+
+      - name: Send Slack notification
+        working-directory: projects/plugins/jetpack/tests/e2e
+        env:
+          RESULT: ${{ needs.e2e-tests.result }}
+        run: |
+          pnpm install
+          pnpm run test-decrypt-all-config
+          pnpm slack -- status $RESULT
+
+  test-reports:
+    name: "Trigger test report workflow"
+    runs-on: ubuntu-latest
+    if: ${{ ! cancelled() }}
+    needs: e2e-tests
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Trigger test report workflow
+        uses: ./.github/actions/test-report-dispatch
+        with:
+          token: ${{ secrets.E2E_TEST_REPORTS_TOKEN }}
+          event_type: e2e

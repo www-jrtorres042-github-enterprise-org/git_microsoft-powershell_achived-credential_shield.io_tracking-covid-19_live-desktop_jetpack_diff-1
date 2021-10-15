@@ -1,0 +1,61 @@
+name: "E2E tests"
+description: "Run e2e tests in a Docker environment"
+inputs:
+  working_directory:
+    required: true
+    description: "The path to the e2e tests, where all commands will be executed."
+  test_group:
+    required: true
+    description: "The name of the test group. Usually a matrix value."
+  test_args:
+    required: true
+    description: "A list of arguments to be appended to the test run command."
+
+runs:
+  using: composite
+  steps:
+    - name: Setup tools
+      uses: ./.github/actions/tool-setup
+
+    - name: Install
+      run: pnpm install
+      shell: bash
+
+    - name: Build plugin(s)
+      run: pnpm run env:build
+      shell: bash
+
+    - name: Environment set-up
+      working-directory: ${{ inputs.working_directory }}
+      env:
+        CONFIG_KEY: ${{ secrets.E2E_CONFIG_KEY }}
+      run: pnpm run env:up
+      shell: bash
+
+    - name: Run ${{ inputs.test_group }} tests
+      working-directory: ${{ inputs.working_directory }}
+      run: pnpm run tests:run -- --${{ inputs.test_args }}
+      shell: bash
+
+    - name: Environment tear-down
+      if: ${{ always() }}
+      working-directory: ${{ inputs.working_directory }}
+      continue-on-error: true
+      run: pnpm run env:down
+      shell: bash
+
+    - name: Upload test artifacts
+      if: ${{ always() }}
+      continue-on-error: true
+      uses: actions/upload-artifact@v2
+      with:
+        name: test-output-${{ inputs.test_group }}
+        path: ${{ inputs.working_directory }}/output
+
+    - name: Send Slack notification
+      if: ${{ failure() }}
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      working-directory: ${{ inputs.working_directory }}
+      run: pnpm slack -- suite ${{ inputs.test_group }}
+      shell: bash
