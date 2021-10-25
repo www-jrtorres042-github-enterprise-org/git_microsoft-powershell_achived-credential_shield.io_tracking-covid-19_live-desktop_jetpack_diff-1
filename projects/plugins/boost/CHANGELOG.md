@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.3.0] - 2021-10-14
+## [1.3.0] - 2021-10-25
 ### Security
 - Critical CSS: Add permissions checks to AJAX endpoints used when dismissing Critical CSS Recommendations.
 
@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Critical CSS: Take port numbers into account when comparing origins for proxying.
 - Refresh speed score if theme has changed since last score
 - Update Critical CSS Generator library to latest
+- Use the Admin UI package and register the menu under the Jetpack top level menu
 
 ### Fixed
 - Critical CSS: Clear generated CSS on theme change.
