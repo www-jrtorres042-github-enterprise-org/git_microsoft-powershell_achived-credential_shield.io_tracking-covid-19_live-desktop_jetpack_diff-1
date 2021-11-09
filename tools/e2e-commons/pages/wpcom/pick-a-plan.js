@@ -28,6 +28,15 @@ export default class PickAPlanPage extends WpPage {
 		const freePlanButton = '[data-e2e-product-slug="free"] a';
 		const href = await this.page.getAttribute( freePlanButton, 'href' );
 		logger.debug( `Free plan button href: ${ href }` );
+		logger.debug( `Plans page URL is: ${ this.page.url() }` );
+
+		if ( href === '/jetpack/connect' && process.env.HEADLESS ) {
+			await this.page.pause();
+		}
+
+		// eslint-disable-next-line jest/no-standalone-expect
+		expect( href ).not.toBe( '/jetpack/connect' );
+
 		await this.waitForTimeout( 500 );
 		return await this.click( freePlanButton );
 	}
