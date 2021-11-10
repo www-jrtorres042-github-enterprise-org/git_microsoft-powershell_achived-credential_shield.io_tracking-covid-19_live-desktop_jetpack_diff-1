@@ -19,7 +19,7 @@ describe( 'Connection', () => {
 	} );
 
 	afterEach( async () => {
-		await prerequisitesBuilder().withCleanEnv().build();
+		// await prerequisitesBuilder().withCleanEnv().build();
 	} );
 
 	it( 'Site only', async () => {
