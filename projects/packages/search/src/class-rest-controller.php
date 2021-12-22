@@ -120,7 +120,7 @@ class REST_Controller {
 
 		$error_msg = esc_html__(
 			'You are not allowed to perform this action.',
-			'jetpack'
+			'jetpack-search-pkg'
 		);
 
 		return new WP_Error( 'rest_forbidden', $error_msg, array( 'status' => rest_authorization_required_code() ) );
@@ -178,7 +178,7 @@ class REST_Controller {
 				'some_updated',
 				sprintf(
 					/* translators: %s are the setting name that not updated. */
-					__( 'Some settings ( %s ) not updated.', 'jetpack' ),
+					__( 'Some settings ( %s ) not updated.', 'jetpack-search-pkg' ),
 					implode(
 						',',
 						array_keys( $errors )
@@ -201,7 +201,7 @@ class REST_Controller {
 		if ( ( true === $instant_search_enabled && false === $module_active ) || ( is_null( $module_active ) && is_null( $instant_search_enabled ) ) ) {
 			return new WP_Error(
 				'rest_invalid_arguments',
-				esc_html__( 'The arguments passed in are invalid.', 'jetpack' ),
+				esc_html__( 'The arguments passed in are invalid.', 'jetpack-search-pkg' ),
 				array( 'status' => 400 )
 			);
 		}
